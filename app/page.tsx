@@ -1,4 +1,5 @@
 import ViewerCount from "@/components/viewer-count";
+import { SWRConfig } from "swr";
 
 const getViewerCount = async function () {
   const response = await fetch(
@@ -10,17 +11,22 @@ const getViewerCount = async function () {
 };
 
 export default async function Home() {
-  const count = await getViewerCount();
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <ViewerCount
-        count={count}
-        getViewerCount={async function () {
-          "use server";
-          return getViewerCount();
-        }}
-      />
-    </main>
+    <SWRConfig
+      value={{
+        fallback: {
+          "viewer-count": getViewerCount(),
+        },
+      }}
+    >
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <ViewerCount
+          getViewerCount={async function () {
+            "use server";
+            return getViewerCount();
+          }}
+        />
+      </main>
+    </SWRConfig>
   );
 }

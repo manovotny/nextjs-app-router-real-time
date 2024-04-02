@@ -3,17 +3,21 @@
 import useSWR from "swr";
 
 export default function ViewerCount({
+  count,
   getViewerCount,
 }: {
+  count: number;
   getViewerCount: () => Promise<number>;
 }) {
   const { data } = useSWR(
-    "viewer-count",
+    "...",
     () => {
       return getViewerCount();
     },
     {
-      refreshInterval: 2_000,
+      fallbackData: count,
+      refreshInterval: 3000,
+      revalidateOnMount: false,
     }
   );
 
